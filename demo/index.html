@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    <head>
+
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+
+        <title>BeatFinder</title>
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+
+        <!-- Core theme CSS (includes Bootstrap) -->
+        <link href="css/styles.css" rel="stylesheet" />
+
+        <!-- Custom Styles -->
+        <style>
+            .jumbotron {
+                padding: 2rem 1rem;
+                background-color: #e9ecef;
+            }
+
+            .video-container {
+                position: relative;
+                padding-bottom: 56.25%;
+                padding-top: 30px;
+                height: 0;
+                overflow: hidden;
+            }
+
+            .video-container iframe, .video-container object, .video-container embed {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+
+    </head>
+
+    <body>
+
+        <!-- Responsive navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">BeatFinder</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#top">Intro</a></li>
+                        <li class="nav-item"><a class="nav-link" aria-current="page" href="#input">Input</a></li>
+                        <li class="nav-item d-none" id="clip-selection-nav"><a class="nav-link" aria-current="page" href="#clip-selection">Clip Selection</a></li>
+                        <li class="nav-item d-none" id="results-nav"><a class="nav-link" aria-current="page" href="#results">Results</a></li>
+                        <li class="nav-item"><a class="nav-link" aria-current="page" href="https://github.com/zikpefu/beatfinder" target="_blank">Source Code</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Page content -->
+        <section class="jumbotron" id="top">
+            <div class="container">
+                <div class="text-left my-5">
+                    <div class="row">
+                        <div class="col-md-12 my-1">
+                            <h1>BeatFinder</h1>
+                            <p class="lead">Recognize background music in YouTube clips with foreground audio overlays.</p>
+                            <p>This project is part of <a href="https://cuhack.it" target="_blank">CUHackIt 2022</a>, and was produced as a collaborative effort by <a href="https://github.com/grantgonzalez14" target="_blank">Grant Gonzalez</a>, <a href="https://github.com/DineshchandarR" target="_blank">Dineshchandar Ravichandran</a>, <a href="https://github.com/sulliops" target="_blank">Owen Sullivan</a>, <a href="https://github.com/nik1097" target="_blank">Nikhil Suresh</a>, and <a href="https://github.com/zikpefu" target="_blank">Zachary Ikpefua</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="jumbotron bg-light" id="input">
+            <div class="container">
+                <div class="text-left my-5">
+                    <div class="row">
+                        <div class="col-md-12 my-1">
+                            <h3>Input YouTube video:</h3>
+                            <p>Input the link to the YouTube video you want to analyze.</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 my-1">
+                            <label for="YouTube-link">YouTube link:</label>
+                            <input type="url" class="form-control" id="YouTube-link-input" aria-describedby="YouTube-link-help" placeholder="https://www.youtube.com/watch?v=">
+                            <small class="form-text text-muted" id="YouTube-link-help">URL must include protocol and follow standard YouTube link formatting. It's best to simply paste the address from your address bar.</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 my-1">
+                            <button type="button" class="btn btn-primary" onclick="getYouTubeVideoID();">Continue</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="jumbotron d-none" id="clip-selection">
+            <div class="container">
+                <div class="text-left my-5">
+                    <div class="row">
+                        <div class="col-md-12 my-1">
+                            <h3>Select clip length:</h3>
+                            <p>Specify the length of the clip you want to analyze by entering the start and end times in the video. If you want to analyze the whole video, you can use the auto-populated values.</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 my-3">
+                            <div class="embed-responsive video-container">
+                                <iframe class="embed-responsive-item" src="" id="YouTube-video-iframe"></iframe>
+                                <placeholder id="YouTube-video-id"></placeholder>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 my-3">
+                            <label for="start-time-input">Start time:</label>
+                            <input type="url" class="form-control w-100" id="start-time-input" placeholder="HH:MM:SS" value="">
+                        </div>
+                        <div class="col-md-6 my-3">
+                            <label for="end-time-input">End time:</label>
+                            <input type="url" class="form-control w-100" id="end-time-input" placeholder="HH:MM:SS" value="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 my-1">
+                            <button type="button" class="btn btn-primary" onclick="analyzeClip();">Analyze</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="jumbotron bg-light d-none" id="loading">
+            <div class="container">
+                <div class="text-left my-5">
+                    <div class="row">
+                        <div class="col-md-12 my-1">
+                            <h3>Results:</h3>
+                            <p>Your results are being processed. Please be patient, as this may take a while depending on the length of your selected clip.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="jumbotron bg-light d-none" id="results">
+            <div class="container">
+                <div class="text-left my-5">
+                    <div class="row">
+                        <div class="col-md-12 my-1">
+                            <h3>Results:</h3>
+                            <p>Your clip audio has been analyzed! View your results below.</p>
+                        </div>
+                    </div>
+                    <!-- TODO: Add outputs for results of clip analyzation. -->
+                </div>
+            </div>
+        </section>
+        <footer class="jumbotron my-auto bg-dark text-white">
+            <div class="container">
+                <div class="text-left my-1">
+                    <div class="row">
+                        <div class="col-md-12 my-1">
+                            <p>Like this project? View or contribute to our <a href="https://github.com/zikpefu/beatfinder" target="_blank">source code</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Bootstrap core JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        <!-- Core theme JS -->
+        <script src="js/scripts.js"></script>
+
+        <!-- Custom JS -->
+        <script>
+            function getYouTubeVideoID() {
+                var inputURL = document.getElementById("YouTube-link-input").value;
+                var splitURLArray = inputURL.split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+                var videoID = splitURLArray[2];
+
+                var videoDuration = getYouTubeVideoDuration(videoID);
+
+                populateEmbed(videoID, videoDuration);
+            }
+
+            function getYouTubeVideoDuration(videoID) {
+                var apiKey = "AIzaSyBAvL6Zudum0PKiBn5_gshSiuVvhFXlA4Q";
+                var endpoint = "https://www.googleapis.com/youtube/v3/videos?id=" + videoID + "&key=" + apiKey + "&part=snippet,contentDetails";
+                var videoDuration = null;
+                $.ajax({
+                    async: false,
+                    type: 'GET',
+                    url: endpoint,
+                    success: function(data) {
+                        videoDuration = data.items[0].contentDetails.duration;
+                        videoDuration = convertDuration(videoDuration);
+                    }
+                });
+                return videoDuration;
+            }
+
+            function convertDuration(videoDuration){ 
+		        //dividing period from time
+		        var	x = videoDuration.split('T'),
+			    duration = '',
+			    time = {},
+			    period = {},
+			    //just shortcuts
+			    s = 'string',
+			    v = 'variables',
+			    l = 'letters',
+			    // store the information about ISO8601 duration format and the divided strings
+			    d = {
+				    period: {
+					    string: x[0].substring(1,x[0].length),
+					    len: 4,
+					    // years, months, weeks, days
+					    letters: ['Y', 'M', 'W', 'D'],
+					    variables: {}
+				    },
+				    time: {
+					    string: x[1],
+					    len: 3,
+					    // hours, minutes, seconds
+					    letters: ['H', 'M', 'S'],
+					    variables: {}
+				    }
+			    };
+		        //in case the duration is a multiple of one day
+		        if (!d.time.string) {
+			        d.time.string = '';
+		        }
+
+		        for (var i in d) {
+			        var len = d[i].len;
+			        for (var j = 0; j < len; j++) {
+				        d[i][s] = d[i][s].split(d[i][l][j]);
+				        if (d[i][s].length>1) {
+					        d[i][v][d[i][l][j]] = parseInt(d[i][s][0], 10);
+					        d[i][s] = d[i][s][1];
+				        } else {
+					        d[i][v][d[i][l][j]] = 0;
+					        d[i][s] = d[i][s][0];
+				        }
+			        }
+		        } 
+                period = d.period.variables;
+                time = d.time.variables;
+                time.H += 24 * period.D + 24 * 7 * period.W + 24 * 7 * 4 * period.M + 24 * 7 * 4 * 12 * period.Y;
+                
+                if (time.H) {
+                    duration = time.H + ':';
+                    if (time.M < 10) {
+                        time.M = '0' + time.M;
+                    }
+                }
+
+                if (time.S < 10) {
+                    time.S = '0' + time.S;
+                }
+
+                duration += time.M + ':' + time.S;
+                return duration;
+            }
+
+            function populateEmbed(videoID, videoDuration) {
+                var iframe = document.getElementById("YouTube-video-iframe");
+                var placeholder = document.getElementById("YouTube-video-id");
+                
+                iframe.src = "https://youtube.com/embed/" + videoID;
+                placeholder.placeholder = videoID;
+
+                populateClipTimes(videoDuration);
+                
+                removeClipSelectionDisplayNone();
+                goToClipSelectionSection();
+            }
+
+            function populateClipTimes(videoDuration) {
+                var start = document.getElementById("start-time-input");
+                var end = document.getElementById("end-time-input");
+
+                start.value = "00:00:00";
+                end.value = videoDuration;
+            }
+
+            function removeClipSelectionDisplayNone() {
+                var clipSelectionSection = document.getElementById("clip-selection");
+                var clipSelectionNavLink = document.getElementById("clip-selection-nav");
+                
+                clipSelectionSection.classList.remove("d-none");
+                clipSelectionNavLink.classList.remove("d-none");
+            }
+
+            function goToClipSelectionSection() {
+                window.location.href="#clip-selection";
+            }
+
+            function analyzeClip() {
+                var startTime = document.getElementById("start-time-input").value;
+                var endTime = document.getElementById("end-time-input").value;
+                var videoID = document.getElementById("YouTube-video-id").placeholder;
+                
+                removeLoadingSectionDisplayNone();
+
+                // TODO: Pass input data to AWS Lambda.
+                // TODO: Get results data from AWS Lambda.
+                // TODO: Populate results section.
+
+                // addLoadingSectionDisplayNone();
+                // removeResultsSectionDisplayNone();
+                // goToResultsSection();
+            }
+
+            function removeLoadingSectionDisplayNone() {
+                var loadingSection = document.getElementById("loading");
+
+                loading.classList.remove("d-none");
+            }
+
+            function addLoadingSectionDisplayNone() {
+                var loadingSection = document.getElementById("loading");
+
+                loading.classList.add("d-none");
+            }
+
+            function removeResultsSectionDisplayNone() {
+                var resultsSection = document.getElementById("results");
+                var resultsNavLink = document.getElementById("results-nav");
+                
+                resultsSection.classList.remove("d-none");
+                resultsNavLink.classList.remove("d-none");
+            }
+
+            function goToResultsSection() {
+                window.location.href="#results";
+            }
+        </script>
+
+    </body>
+</html>
