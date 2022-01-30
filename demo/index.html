@@ -23,6 +23,8 @@
                 background-color: #e9ecef;
             }
 
+            /* Solution found at: https://stackoverflow.com/a/63142090/7554558 */
+
             .video-container {
                 position: relative;
                 padding-bottom: 56.25%;
@@ -38,6 +40,8 @@
                 width: 100%;
                 height: 100%;
             }
+
+            /* Solution found at: https://avexdesigns.com/blog/responsive-youtube-embed */
         </style>
 
     </head>
@@ -112,7 +116,7 @@
                         <div class="col-md-12 my-3">
                             <div class="embed-responsive video-container">
                                 <iframe class="embed-responsive-item" src="" id="YouTube-video-iframe"></iframe>
-                                <placeholder id="YouTube-video-id"></placeholder>
+                                <placeholder id="YouTube-video-link-placeholder"></placeholder>
                             </div>
                         </div>
                     </div>
@@ -182,8 +186,13 @@
         <script>
             function getYouTubeVideoID() {
                 var inputURL = document.getElementById("YouTube-link-input").value;
+                var placeholder = document.getElementById("YouTube-video-link-placeholder");
+
+                placeholder.placeholder = inputURL;
+
                 var splitURLArray = inputURL.split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
                 var videoID = splitURLArray[2];
+                // Solution found at: https://stackoverflow.com/a/54200105/7554558
 
                 var videoDuration = getYouTubeVideoDuration(videoID);
 
@@ -198,11 +207,12 @@
                     async: false,
                     type: 'GET',
                     url: endpoint,
-                    success: function(data) {
-                        videoDuration = data.items[0].contentDetails.duration;
+                    success: function(response) {
+                        videoDuration = response.items[0].contentDetails.duration;
                         videoDuration = convertDuration(videoDuration);
                     }
                 });
+                // Solution found at: https://stackoverflow.com/a/44086156/7554558
                 return videoDuration;
             }
 
@@ -268,14 +278,13 @@
 
                 duration += time.M + ':' + time.S;
                 return duration;
+                // Solution found at: https://stackoverflow.com/a/24290476/7554558
             }
 
             function populateEmbed(videoID, videoDuration) {
                 var iframe = document.getElementById("YouTube-video-iframe");
-                var placeholder = document.getElementById("YouTube-video-id");
                 
                 iframe.src = "https://youtube.com/embed/" + videoID;
-                placeholder.placeholder = videoID;
 
                 populateClipTimes(videoDuration);
                 
@@ -304,19 +313,85 @@
             }
 
             function analyzeClip() {
+                var videoLink = document.getElementById("YouTube-video-link-placeholder").placeholder;
                 var startTime = document.getElementById("start-time-input").value;
                 var endTime = document.getElementById("end-time-input").value;
-                var videoID = document.getElementById("YouTube-video-id").placeholder;
                 
                 removeLoadingSectionDisplayNone();
 
                 // TODO: Pass input data to AWS Lambda.
+                postDataToLambda(videoLink, startTime, endTime);
+
+                var songData = null;
                 // TODO: Get results data from AWS Lambda.
+                // songData = getDataFromLambda();
+
                 // TODO: Populate results section.
 
                 // addLoadingSectionDisplayNone();
                 // removeResultsSectionDisplayNone();
                 // goToResultsSection();
+            }
+
+            function postDataToLambda(videoLink, startTime, endTime) {
+                var rawData = new Object();
+
+                rawData.videoLink = videoLink;
+                rawData.startTime = startTime;
+                rawData.endTime = endTime;
+
+                var jsonData = JSON.stringify(rawData);
+
+                var lambdaEndpoint = "https://383h795xtl.execute-api.us-east-1.amazonaws.com/test-cors/fetch";
+
+                $.ajax({
+                    type: 'GET',
+                    url: lambdaEndpoint,
+                    data: rawData,
+                    dataType: 'json',
+                    crossDomain: true,
+                    contentType: 'application/json',
+                    success: function(response) {
+                        console.log(JSON.stringify(data));
+                    },
+                    error: function(response) {
+                        console.log("Error: " + JSON.stringify(response));
+                    }
+                });
+            }
+
+            function getDataFromLambda() {
+                // TODO: Get Lambda endpoint URL for receiving processed data.
+                // var lambdaEndpoint = 
+
+                var songTitle = null;
+                var songAuthor = null;
+                var songDate = null;
+                
+                $.ajax({
+                    type: 'GET',
+                    url: lambdaEndpoint,
+                    data: rawData,
+                    dataType: 'json',
+                    crossDomain: true,
+                    contentType: 'application/json',
+                    success: function(response) {
+                        songTitle = response['title'];
+                        songAuthor = response['author-credit'][0]['name'];
+                        songDate = response['first-release-date'];
+                    },
+                    error: function(response) {
+                        console.log("Error: " + JSON.stringify(response));
+                    }
+                });
+
+                var songData = new Object();
+
+                songData.songTitle = songTitle;
+                songData.songAuthor = songAuthor;
+                songData.songDate = songDate;
+
+                return songData;
             }
 
             function removeLoadingSectionDisplayNone() {
