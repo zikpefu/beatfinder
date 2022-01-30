@@ -21,8 +21,14 @@ val = os.path.isfile('/tmp/' + filename)
 
 def lambda_handler(event, context):
     # TODO implement
+    link = event['queryStringParameters']['link']
+    print(link)
     
-    return {
-        'statusCode': 200,
-        'body': json.dumps(event)
-    }
+    linkResponse = []
+    linkResponse['link'] = link
+    
+    responseObject = {}
+    
+    responseObject['statusCode'] = 200
+    responseObject['body'] = json.dumps(linkResponse)
+    return responseObject
