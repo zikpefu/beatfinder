@@ -18,7 +18,7 @@ The project is comprised of a front-end, which parses URL input and allows users
 
 Each core function of the program and website were completed simultaneously by the various team members:
 
-<a href="https://github.com/grantgonzalez14" target="_blank">Grant Gonzalez</a> — 
+<a href="https://github.com/grantgonzalez14" target="_blank">Grant Gonzalez</a> — Research and learning about how to build the project.
 
 <a href="https://github.com/DineshchandarR" target="_blank">Dineshchandar Ravichandran</a> — Separation of foreground speech from background music using Python.
 
@@ -32,3 +32,8 @@ Each core function of the program and website were completed simultaneously by t
 
 **Resources used:**
 
+StackOverflow — Used frequently throughout the project at various points of development. Some solution links are attached to the areas where they're applicable.
+
+YouTube — Used frequently throughout the project at various points of development.
+
+CUHackIT Mentors — Provided help with API calls throughout the course of development.

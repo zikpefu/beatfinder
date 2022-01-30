@@ -159,6 +159,13 @@
                             <p>Your clip audio has been analyzed! View your results below.</p>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12 my-1">
+                            <p><b>Song title:</b> <span id="song-title-p"></span></p>
+                            <p><b>Author:</b> <span id="song-author-p"></span></p>
+                            <p><b>Release date:</b> <span id="song-date-p"></span></p>
+                        </div>
+                    </div>
                     <!-- TODO: Add outputs for results of clip analyzation. -->
                 </div>
             </div>
@@ -327,6 +334,7 @@
                 // songData = getDataFromLambda();
 
                 // TODO: Populate results section.
+                // populateResults(songData);
 
                 // addLoadingSectionDisplayNone();
                 // removeResultsSectionDisplayNone();
@@ -392,6 +400,16 @@
                 songData.songDate = songDate;
 
                 return songData;
+            }
+
+            function populateResults(songData) {
+                var songTitleP = document.getElementById("song-title-p");
+                var songAuthorP = document.getElementById("song-author-p");
+                var songDateP = document.getElementById("song-date-p");
+
+                songTitleP = songData.songTitle;
+                songAuthorP = songData.songAuthor;
+                songDateP = songData.songDate;
             }
 
             function removeLoadingSectionDisplayNone() {
